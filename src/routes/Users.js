@@ -6,13 +6,17 @@ import UserSearch from '../components/Users/UserSearch';
 import UserModel from '../components/Users/UserModel';
 //connect工具函数
 import { connect } from 'dva';
+//分页处理需要的redux
+import {routerRedux} from 'dva/router'
 
 import styles from './User.less';
+
 /*
 * 我们要展示的User dashboard 界面，
 * 这是一个Container Component
 */
-function Users({ location,dispatch,users}) {
+//location,dispatch,users
+function Users({location,dispatch,users}) {
   //这个和import的很像，都是./models/users.js的state状态，我们根据获取到的静态数据设置userListProps的props值。
   const {loading,list,total,current,currentItem,modalVisible, modalType} = users;
 
@@ -22,6 +26,13 @@ function Users({ location,dispatch,users}) {
     total,
     loading,
     current,
+    //传递一个分页处理的函数
+    onPageChange(page){
+      dispatch(routerRedux.push({
+        pathname:'/users',
+        query:{page}
+      }));
+    }
   };
   const UserModelProps={};
 
@@ -38,6 +49,8 @@ function Users({ location,dispatch,users}) {
 }
 Users.prototype = {
  users:PropTypes.object,
+  location: PropTypes.object,
+  dispatch: PropTypes.func,
 };
 //订阅数据，关联./models/users.js，以后数据更新了同步更新这里的数据
 function mapStateToProps({users}) {

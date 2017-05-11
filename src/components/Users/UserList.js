@@ -1,7 +1,7 @@
 import React, {Component, PropTypes } from 'react';
 
 //antd的组件
-import {Table,message,Popconfirm} from 'antd';
+import {Table,message,Popconfirm,Pagination} from 'antd';
 
 // stateless 写法，不用维护内部state状态，const定义的变量不能修改。
 const UserList = ({
@@ -9,6 +9,7 @@ const UserList = ({
   current,
   loading,
   dataSource,
+  onPageChange,
 }) => {
   const columns=[
     //数组，定义表格行数据，格式由antd-table提供
@@ -42,13 +43,15 @@ const UserList = ({
       ),
     }
   ];
-  //分页对象
+  //分页对象,暂时先不用
   const pagination={
-    total,
-    current,
+    total:total,
+    current:current,
     pageSize: 10,
-    onChange: ()=>{},
+    onChange:onPageChange,
   };
+  // console.log('hehe :'+current);
+
   //stateless的return
   return (
     <div>
@@ -59,10 +62,22 @@ const UserList = ({
         rowKey={record => record.id}
         pagination={pagination}
       />
+
+      {/*<Pagination*/}
+        {/*className="ant-table-pagination"*/}
+        {/*total={total}*/}
+        {/*current={current}*/}
+        {/*pageSize={10}*/}
+        {/*onChange={onPageChange}*/}
+      {/*/>*/}
     </div>
   );
 };
-
+UserList.prototype={
+  onPageChange:PropTypes.func,
+  total:PropTypes.any,
+  current:PropTypes.any,
+};
 
 export default UserList;
 

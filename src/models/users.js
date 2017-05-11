@@ -2,12 +2,15 @@
 import React from 'react';
 import { hashHistory } from 'dva/router';
 import {query} from '../services/users';
+import {parse} from 'qs';
 
 export default {
   namespace:'users',
   //这个state就是./route/Users.js的state，我们用reducers加载一些静态数据，这个state修改以后，subscribe监听传回新state对象给Users.js. (redux)
   state:{
     list:[],
+    // field:'',
+    // keyword:'',
     total:null,
     loading:false,// 控制加载状态
     current:null,// 当前分页信息
@@ -22,7 +25,8 @@ export default {
         if (location.pathname === '/users') {
           dispatch({
             type: 'query',
-            payload: {}
+            //payload加参数
+            payload: location.query,
           });
         }
       });
@@ -31,7 +35,8 @@ export default {
   effects: {
     *query({payload},{select,call,put}){
       yield put({ type: 'showLoading' });
-      const { data } = yield call(query);
+      yield put({ type: 'updateQueryKey', payload });
+      const { data } = yield call(query,parse(payload));
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -82,10 +87,14 @@ export default {
       //   ],
       //
       // };
+      // console.log('state: '+state.current);
       return {...state, ...action.payload, loading: false};
     },
     createSuccess(){},
     deleteSuccess(){},
     updateSuccess(){},
+    updateQueryKey(state, action) {
+      return { ...state, ...action.payload };
+    },
   }
 }
