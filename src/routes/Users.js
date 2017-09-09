@@ -14,6 +14,8 @@ import styles from './User.less';
 /*
 * 我们要展示的User dashboard 界面，
 * 这是一个Container Component
+* 这个Component就是把数据从model获取到，以props形式给形式组件，数据更新形式redux，可以保证多组件间的交互
+*  TODO 完成搜索
 */
 //location,dispatch,users
 function Users({location,dispatch,users}) {
