@@ -20,9 +20,26 @@ import styles from './User.less';
 //location,dispatch,users
 function Users({location,dispatch,users}) {
   //这个和import的很像，都是./models/users.js的state状态，我们根据获取到的静态数据设置userListProps的props值。
-  const {loading,list,total,current,currentItem,modalVisible, modalType} = users;
+  const {loading,list,total,current,field, keyword,currentItem,modalVisible, modalType} = users;
 
-  const UserSearchProps={};
+  const UserSearchProps={
+    field,
+    keyword,
+    onSearch(fieldsValue) {
+      dispatch({
+        type: 'users/query',
+        payload: fieldsValue,
+      });
+    },
+    onAdd() {
+      dispatch({
+        type: 'users/showModal',
+        payload: {
+          modalType: 'create',
+        },
+      });
+    },
+  };
   const UserListProps={
     dataSource: list,
     total,
@@ -41,7 +58,7 @@ function Users({location,dispatch,users}) {
   return(
     <div className={styles.normal}>
       {/* 用户筛选搜索框 {...x}这个写法和java不定参数有点像 */}
-      <UserSearch  />
+      <UserSearch  {...UserSearchProps}/>
       {/* 用户信息展示列表 */}
       <UserList  {...UserListProps}/>
       {/* 添加用户 & 修改用户弹出的浮层 */}

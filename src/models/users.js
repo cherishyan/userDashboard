@@ -9,8 +9,8 @@ export default {
   //这个state就是./route/Users.js的state，我们用reducers加载一些静态数据，这个state修改以后，subscribe监听传回新state对象给Users.js. (redux)
   state:{
     list:[],
-    // field:'',
-    // keyword:'',
+    field:'',
+    keyword:'',
     total:null,
     loading:false,// 控制加载状态
     current:null,// 当前分页信息

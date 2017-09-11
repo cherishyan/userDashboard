@@ -6,7 +6,7 @@ import Users from './routes/Users';
 function RouterConfig({ history }) {
   return (
     <Router history={history}>
-      <Route path="/" component={Users} />
+      {/*<Route path="/" component={Users} />*/}
       <Route path="/users" component={Users} />
     </Router>
   );
