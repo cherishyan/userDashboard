@@ -1,26 +1,26 @@
 //User的数据模型
 import React from 'react';
-import { hashHistory } from 'dva/router';
-import {query} from '../services/users';
+import {hashHistory} from 'dva/router';
+import {query,create} from '../services/users';
 import {parse} from 'qs';
 
 export default {
-  namespace:'users',
+  namespace: 'users',
   //这个state就是./route/Users.js的state，我们用reducers加载一些静态数据，这个state修改以后，subscribe监听传回新state对象给Users.js. (redux)
-  state:{
-    list:[],
-    field:'',
-    keyword:'',
-    total:null,
-    loading:false,// 控制加载状态
-    current:null,// 当前分页信息
-    currentItem:{},// 当前操作的用户对象
-    modalVisible:false,// 弹出窗的显示状态
-    modalType:'create',// 弹出窗的类型（添加用户，编辑用户）
+  state: {
+    list: [],
+    field: '',
+    keyword: '',
+    total: null,
+    loading: false,// 控制加载状态
+    current: null,// 当前分页信息
+    currentItem: {},// 当前操作的用户对象
+    modalVisible: false,// 弹出窗的显示状态
+    modalType: 'create',// 弹出窗的类型（添加用户，编辑用户）
   },
   //获取用户数据信息的时机就是访问 /users/ 这个页面，所以我们可以监听路由信息，只要路径是 /users/ 那么我们就会发起 action，获取用户数据
-  subscriptions:{
-    setup({ dispatch, history }) {
+  subscriptions: {
+    setup({dispatch, history}) {
       history.listen(location => {
         if (location.pathname === '/users') {
           dispatch({
@@ -33,10 +33,10 @@ export default {
     },
   },
   effects: {
-    *query({payload},{select,call,put}){
-      yield put({ type: 'showLoading' });
-      yield put({ type: 'updateQueryKey', payload });
-      const { data } = yield call(query,parse(payload));
+    *query({payload}, {select, call, put}){
+      yield put({type: 'showLoading'});
+      yield put({type: 'updateQueryKey', payload});
+      const {data} = yield call(query, parse(payload));
       if (data) {
         yield put({
           type: 'querySuccess',
@@ -48,19 +48,41 @@ export default {
         });
       }
     },
-    *create(){},
-    *'delete'(){},
-    *update(){},
+    *create({ payload }, { call, put }) {
+      yield put({ type: 'hideModal' });
+      yield put({ type: 'showLoading' });
+      const { data } = yield call(create, payload);
+      if (data && data.success) {
+        yield put({
+          type: 'createSuccess',
+          payload: {
+            list: data.data,
+            total: data.page.total,
+            current: data.page.current,
+            field: '',
+            keyword: '',
+          },
+        });
+      }
+    },
+    *'delete'(){
+    },
+    *update(){
+    },
   },
   reducers: {
-    showLoading(state,action){
-      return {...state,loading:true};
+    showLoading(state, action){
+      return {...state, loading: true};
     }, // 控制加载状态的 reducer
-    showModal(){}, // 控制 Modal 显示状态的 reducer
-    hideModal(){},
+    showModal(state,action){
+      return {...state, ...action.payload,modalVisible:true};
+    }, // 控制 Modal 显示状态的 reducer
+    hideModal(state){
+      return {...state, modalVisible:false};
+    },
     // 使用静态数据返回
     //然后mock数据，模拟后台服务器数据返回
-    querySuccess(state,action){
+    querySuccess(state, action){
       // const mock = {
       //   total: 3,
       //   current: 1,
@@ -90,11 +112,15 @@ export default {
       // console.log('state: '+state.current);
       return {...state, ...action.payload, loading: false};
     },
-    createSuccess(){},
-    deleteSuccess(){},
-    updateSuccess(){},
+    createSuccess(){
+      return { ...state, ...action.payload, loading: false };
+    },
+    deleteSuccess(){
+    },
+    updateSuccess(){
+    },
     updateQueryKey(state, action) {
-      return { ...state, ...action.payload };
+      return {...state, ...action.payload};
     },
   }
 }

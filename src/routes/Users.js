@@ -53,7 +53,22 @@ function Users({location,dispatch,users}) {
       }));
     }
   };
-  const UserModelProps={};
+  const UserModelProps={
+    item:modalType==='create'?{}:currentItem,
+    type:modalType,
+    visible:modalVisible,
+    onOk(data) {
+      dispatch({
+        type: `users/${modalType}`,
+        payload: data,
+      });
+    },
+    onCancel(){
+      dispatch({
+        type:'users/hideModal'
+      })
+    }
+  };
 
   return(
     <div className={styles.normal}>
@@ -62,7 +77,7 @@ function Users({location,dispatch,users}) {
       {/* 用户信息展示列表 */}
       <UserList  {...UserListProps}/>
       {/* 添加用户 & 修改用户弹出的浮层 */}
-      <UserModel  />
+      <UserModel {...UserModelProps} />
     </div>
   );
 }
