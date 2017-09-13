@@ -71,7 +71,7 @@ export default {
     },
   },
   reducers: {
-    showLoading(state, action){
+    showLoading(state){
       return {...state, loading: true};
     }, // 控制加载状态的 reducer
     showModal(state,action){
@@ -112,7 +112,7 @@ export default {
       // console.log('state: '+state.current);
       return {...state, ...action.payload, loading: false};
     },
-    createSuccess(){
+    createSuccess(state, action){
       return { ...state, ...action.payload, loading: false };
     },
     deleteSuccess(){

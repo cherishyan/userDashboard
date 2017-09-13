@@ -29,7 +29,7 @@ const UserModel = ({
       if (errors) {
         return;
       }
-      const data = {...getFieldsValue, key: item.key};
+      const data = {...getFieldsValue(), key: item.key};
       onOk(data);
     })
   }
