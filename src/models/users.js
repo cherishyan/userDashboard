@@ -1,6 +1,7 @@
 //User的数据模型
 import React from 'react';
 import {hashHistory} from 'dva/router';
+import queryString from 'query-string';
 import {query,create} from '../services/users';
 import {parse} from 'qs';
 
@@ -21,12 +22,13 @@ export default {
   //获取用户数据信息的时机就是访问 /users/ 这个页面，所以我们可以监听路由信息，只要路径是 /users/ 那么我们就会发起 action，获取用户数据
   subscriptions: {
     setup({dispatch, history}) {
-      history.listen(location => {
-        if (location.pathname === '/users') {
+      history.listen(({pathname,search}) => {
+        const query = queryString.parse(search);
+        if (pathname === '/users') {
           dispatch({
             type: 'query',
             //payload加参数
-            payload: location.query,
+            payload: query,
           });
         }
       });
