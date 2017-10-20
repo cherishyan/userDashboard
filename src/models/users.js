@@ -4,6 +4,8 @@ import {hashHistory} from 'dva/router';
 import queryString from 'query-string';
 import {query,create} from '../services/users';
 import {parse} from 'qs';
+import {queryLogin} from "../services/login";
+import { routerRedux } from 'dva/router'
 
 export default {
   namespace: 'users',
@@ -18,6 +20,8 @@ export default {
     currentItem: {},// 当前操作的用户对象
     modalVisible: false,// 弹出窗的显示状态
     modalType: 'create',// 弹出窗的类型（添加用户，编辑用户）
+    user:{},
+    locationPathname: '',
   },
   //获取用户数据信息的时机就是访问 /users/ 这个页面，所以我们可以监听路由信息，只要路径是 /users/ 那么我们就会发起 action，获取用户数据
   subscriptions: {
@@ -71,8 +75,28 @@ export default {
     },
     *update(){
     },
+    *queryLogin({payload}, {select, call, put}){
+      const { success, user } = yield call(queryLogin, payload);
+      const { locationPathname } = yield select(_ => _.users);
+      if(success && user){
+
+      }else{
+        yield put(routerRedux.push({
+          pathname: '/login',
+          search: queryString.stringify({
+            from: locationPathname,
+          }),
+        }))
+      }
+    },
   },
   reducers: {
+    updateState (state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+      }
+    },
     showLoading(state){
       return {...state, loading: true};
     }, // 控制加载状态的 reducer

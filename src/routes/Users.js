@@ -11,6 +11,9 @@ import {routerRedux} from 'dva/router'
 
 import styles from './User.less';
 
+import Loader from './../components/Loader/Loader';
+import { withRouter } from 'dva/router';
+
 /*
 * 我们要展示的User dashboard 界面，
 * 这是一个Container Component
@@ -21,6 +24,10 @@ import styles from './User.less';
 function Users({location,dispatch,users}) {
   //这个和import的很像，都是./models/users.js的state状态，我们根据获取到的静态数据设置userListProps的props值。
   const {loading,list,total,current,field, keyword,currentItem,modalVisible, modalType} = users;
+
+  // let { pathname } = location;
+  // pathname = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  // const openPages = '/login';
 
   const UserSearchProps={
     field,
@@ -70,6 +77,14 @@ function Users({location,dispatch,users}) {
     }
   };
 
+  // if (openPages && openPages.includes(pathname)) {
+  //   return (<div>
+  //     <Loader fullScreen spinning={pageloading.effects['users/queryLogin']}/>
+  //     {children}
+  //   </div>)
+  // }
+
+
   return(
     <div className={styles.normal}>
       {/* 用户筛选搜索框 {...x}这个写法和java不定参数有点像 */}
@@ -81,10 +96,10 @@ function Users({location,dispatch,users}) {
     </div>
   );
 }
-Users.prototype = {
- users:PropTypes.object,
+Users.propTypes = {
   location: PropTypes.object,
   dispatch: PropTypes.func,
+  users:PropTypes.object,
 };
 //订阅数据，关联./models/users.js，以后数据更新了同步更新这里的数据
 function mapStateToProps({users}) {

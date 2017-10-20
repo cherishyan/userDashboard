@@ -16,7 +16,10 @@
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
     "qs": "^6.5.0",
-    "query-string": "^5.0.0"
+    "query-string": "^5.0.0",
+    "dva-loading": "^0.2.0",
+    "history": "^4.7.2",
+    "classnames": "^2.2.5"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
